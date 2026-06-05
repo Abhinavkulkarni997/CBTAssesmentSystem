@@ -2,6 +2,27 @@ const Exam=require("../models/Exam");
 const Question=require("../models/Question");
 const ExamSession=require("../models/ExamSession");
 
+function shuffleArray(array) {
+
+    const shuffled = [...array];
+
+    for (
+        let i = shuffled.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j = Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        [shuffled[i], shuffled[j]] =
+        [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
 const startExam=async(req,res)=>{
     try{
         const {examId}=req.body;
@@ -40,11 +61,20 @@ const startExam=async(req,res)=>{
                 message:"Exam not found"
             });
         }
-        let questions=await Question.find();
+        // let questions=await Question.find();
 
-        // shuffle questions and pick required number
-        questions.sort(()=>Math.random()-0.5);
-        const assignedQuestions=questions.map(question=>question._id);
+        // // shuffle questions and pick required number
+        // questions.sort(()=>Math.random()-0.5);
+        // const assignedQuestions=questions.map(question=>question._id);
+        let questions = await Question.find();
+
+const shuffledQuestions =
+    shuffleArray(questions);
+
+const assignedQuestions =
+    shuffledQuestions.map(
+        question => question._id
+    );
         const session=await ExamSession.create({
             userId,
             examId,
@@ -64,40 +94,92 @@ const startExam=async(req,res)=>{
     }
 }
 
-const getCurrentSession=async(req,res)=>{
-    try{
+// const getCurrentSession=async(req,res)=>{
+//     try{
 
-      const session =
- await ExamSession.findOne({
-   userId:req.user._id,
-   status:"InProgress"
- })
-    .populate(
-   "assignedQuestions",
-   "-correctAnswer"
- )
- .populate(
-   "examId"
- );
+//       const session =
+//  await ExamSession.findOne({
+//    userId:req.user._id,
+//    status:"InProgress"
+//  })
+//     .populate(
+//    "assignedQuestions",
+//    "-correctAnswer"
+//  )
+//  .populate(
+//    "examId"
+//  );
 
-      if(!session){
-        return res.status(404).json({
-            success:false,
-            message:"No active session found"
-        });
-      }
+//       if(!session){
+//         return res.status(404).json({
+//             success:false,
+//             message:"No active session found"
+//         });
+//       }
 
-        res.status(200).json({
-            success:true,
-            session
-        });
-    }catch(error){
-        res.status(500).json({
-            success:false,
-            message:error.message
-        })
+//         res.status(200).json({
+//             success:true,
+//             session
+//         });
+//     }catch(error){
+//         res.status(500).json({
+//             success:false,
+//             message:error.message
+//         })
+//     }
+// }
+
+const getCurrentSession = async (req, res) => {
+  try {
+
+    const session =
+      await ExamSession.findOne({
+        userId: req.user._id,
+        status: "InProgress"
+      })
+      .populate("examId");
+
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: "No active session found"
+      });
     }
-}
+
+    const questions =
+      await Question.find({
+        _id: {
+          $in: session.assignedQuestions
+        }
+      }).select("-correctAnswer");
+
+    const orderedQuestions =
+      session.assignedQuestions.map(
+        id =>
+          questions.find(
+            q =>
+              q._id.toString() ===
+              id.toString()
+          )
+      );
+
+    session.assignedQuestions =
+      orderedQuestions;
+
+    res.status(200).json({
+      success: true,
+      session
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+};
 const saveAnswer=async(req,res)=>{
     try{
         const {questionId, answer}=req.body;
