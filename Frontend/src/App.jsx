@@ -9,7 +9,9 @@ function App() {
  
 
   return (
-    <BrowserRouter >
+
+    <BrowserRouter basename="/exam">
+
       <Routes>
         <Route path="/" element={<Login/>} />
         <Route path="/dashboard" element={
