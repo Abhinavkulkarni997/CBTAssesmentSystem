@@ -22,21 +22,35 @@ function Dashboard() {
         }
     };
 
-    const fetchExamStatus=async()=>{
-        try{
-            const res=await api.get("/exam-session/current");
+    // const fetchExamStatus=async()=>{
+    //     try{
+    //         const res=await api.get("/exam-session/status");
+    //         // api.get("/exam-session/current");
 
-            if(res.data.session){
-                setExamStatus({
-                    status:"InProgress"
-                })
-            }
-        }catch(error){
-            if(error.response?.status===404){
-                setExamStatus({status:"NotStarted"});
-            }
-        }
+    //         if(res.data.session){
+    //             setExamStatus({
+    //                 status:"InProgress"
+    //             })
+    //         }
+    //     }catch(error){
+    //         if(error.response?.status===404){
+    //             setExamStatus({status:"NotStarted"});
+    //         }
+    //     }
+    // }
+    const fetchExamStatus = async () => {
+    try {
+        const res =
+        await api.get(
+            "/exam-session/status"
+        );
+
+        setExamStatus(res.data);
+
+    } catch(error) {
+        console.log(error);
     }
+};
     const handleStartExam=
     async(examId)=>{
         try{
@@ -51,6 +65,7 @@ function Dashboard() {
         logout();
         window.location.href="/";
     };
+    console.log(examStatus);
   return (
     <div className="min-h-screen bg-slate-100">
         <header className="bg-white shadow">
@@ -71,31 +86,35 @@ function Dashboard() {
                     <h2 className="text-xl font-semibold text-gray-800 mb-2">{exam.title}</h2>
                     <p className="mt-3">Duration: {exam.duration} minutes</p>
                     <p>Questions: {exam.totalQuestions}</p>
-                   {
-    examStatus.status ===
-    "InProgress" ? (
+    {
+ examStatus.status==="Completed" ? (
 
-        <button
-            onClick={() =>
-                navigate("/exam")
-            }
-            className="mt-4 px-4 py-2 w-full bg-green-600 text-white rounded"
-        >
-            Continue Assessment
-        </button>
+   <button
+    disabled
+    className="mt-4 px-4 py-2 w-full bg-gray-500 text-white rounded"
+   >
+     Assessment Submitted
+   </button>
 
-    ) : (
+ ) : examStatus.status==="InProgress" ? (
 
-        <button
-            onClick={() =>
-                handleStartExam(exam._id)
-            }
-            className="mt-4 px-4 py-2 w-full bg-cyan-600 text-white rounded"
-        >
-            Start Assessment
-        </button>
+   <button
+    onClick={()=>navigate("/exam")}
+    className="mt-4 px-4 py-2 w-full bg-green-600 text-white rounded"
+   >
+     Continue Assessment
+   </button>
 
-    )
+ ) : (
+
+   <button
+    onClick={()=>handleStartExam(exam._id)}
+    className="mt-4 px-4 py-2 w-full bg-cyan-600 text-white rounded"
+   >
+     Start Assessment
+   </button>
+
+ )
 }
                 </div>
                  ))

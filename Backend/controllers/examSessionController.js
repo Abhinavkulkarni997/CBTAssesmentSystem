@@ -263,4 +263,47 @@ const getResults=async(req,res)=>{
         });
     }
 }
-module.exports={startExam,getCurrentSession,saveAnswer,submitExam,getResults};
+
+
+
+const getUserExamStatus = async(req,res)=>{
+    try{
+
+        const userId = req.user._id;
+
+        const inProgress =
+        await ExamSession.findOne({
+            userId,
+            status:"InProgress"
+        });
+
+        if(inProgress){
+            return res.json({
+                status:"InProgress"
+            });
+        }
+
+        const completed =
+        await ExamSession.findOne({
+            userId,
+            status:"Completed"
+        });
+
+        if(completed){
+            return res.json({
+                status:"Completed"
+            });
+        }
+
+        res.json({
+            status:"NotStarted"
+        });
+
+    }catch(error){
+        res.status(500).json({
+            message:error.message
+        });
+    }
+};
+
+module.exports={startExam,getCurrentSession,saveAnswer,submitExam,getResults,getUserExamStatus};
