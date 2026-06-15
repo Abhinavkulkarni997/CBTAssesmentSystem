@@ -66,6 +66,13 @@ const ExamPage = () => {
         );
 
         setTimerInitialized(true);
+        console.log("Duration:", duration);
+console.log("Started At:", session.startedAt);
+console.log("Now:", new Date().toISOString());
+console.log("Elapsed:", elapsed);
+console.log("Remaining:", remaining);
+
+
 
     };
 

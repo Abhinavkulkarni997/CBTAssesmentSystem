@@ -63,7 +63,8 @@ function Dashboard() {
 
     const handleLogout=()=>{
         logout();
-        window.location.href="/";
+        window.location.href="/exam";
+        // navigate("/");
     };
     console.log(examStatus);
   return (
