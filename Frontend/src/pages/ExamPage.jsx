@@ -13,7 +13,7 @@ const ExamPage = () => {
      const navigate=useNavigate();
 
      
-
+console.log("Browser Time:", new Date());
 
      useEffect(()=>{
         fetchSession();
