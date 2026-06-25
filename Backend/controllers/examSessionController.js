@@ -76,13 +76,14 @@ const assignedQuestions =
         question => question._id
     );
     console.log("Server Time:", new Date());
-    console.log("StartedAt:", session.startedAt);
+
         const session=await ExamSession.create({
             userId,
             examId,
             assignedQuestions,
             status:"InProgress",
         });
+        console.log("StartedAt:", session.startedAt);
         res.status(201).json({
             success:true,
             message:"Exam Session Started",
