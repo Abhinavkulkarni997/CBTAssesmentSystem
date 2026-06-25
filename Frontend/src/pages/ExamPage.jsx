@@ -150,6 +150,10 @@ useEffect(() => {
         //     "Questions Received:",
         //     res.data.session.assignedQuestions
         // );
+          console.log(
+            "Browser Now:",
+            new Date().toISOString()
+        );
             setSession(res.data.session);
             setSelectedAnswers(res.data.session.answers || {});
 
