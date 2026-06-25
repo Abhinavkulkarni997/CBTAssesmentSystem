@@ -51,13 +51,13 @@ const ExamPage = () => {
 
         const now = Date.now();
 
-        const elapsed =
+        const elapsed =Math.max(0,
             Math.floor(
                 (now - startTime) / 1000
-            );
+            ));
 
-        const remaining =
-            duration * 60 - elapsed;
+        const remaining =Math.max(0,
+            duration * 60 - elapsed);
 
         setTimeLeft(
             remaining > 0
