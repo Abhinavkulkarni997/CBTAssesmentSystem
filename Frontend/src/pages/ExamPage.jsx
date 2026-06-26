@@ -145,11 +145,14 @@ useEffect(() => {
 ]);
      const fetchSession=async()=>{
         try{
+          console.log("Fetching session...");
             const res=await api.get("/exam-session/current");
+            console.log("Session received at:",new Date().toISOString());
         //      console.log(
         //     "Questions Received:",
         //     res.data.session.assignedQuestions
         // );
+        console.log("startedAt:",res.data.session.startedAt);
           console.log(
             "Browser Now:",
             new Date().toISOString()
@@ -161,6 +164,7 @@ useEffect(() => {
             console.log(error);
         }
      };
+     console.log("Component Render:", new Date().toISOString());
 
      if(!session){
         return(
