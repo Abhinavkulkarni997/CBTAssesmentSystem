@@ -147,6 +147,10 @@ useEffect(() => {
         try{
           console.log("Fetching session...");
             const res=await api.get("/exam-session/current");
+            console.log("FULL SESSION");
+            console.log(res.data.session);
+            console.log(res.data.session._id);
+            console.log(res.data.session.status);
             console.log("Session received at:",new Date().toISOString());
         //      console.log(
         //     "Questions Received:",
