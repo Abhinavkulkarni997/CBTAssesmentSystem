@@ -75,7 +75,12 @@ const assignedQuestions =
     shuffledQuestions.map(
         question => question._id
     );
-    console.log("Server Time:", new Date());
+    // console.log("Server Time:", new Date());
+    // Check Node's current time BEFORE creating session
+console.log("========== BEFORE CREATE ==========");
+console.log("Node Date:", new Date());
+console.log("Node ISO :", new Date().toISOString());
+console.log("Timestamp:", Date.now());
 
         const session=await ExamSession.create({
             userId,
@@ -83,7 +88,13 @@ const assignedQuestions =
             assignedQuestions,
             status:"InProgress",
         });
-        console.log("StartedAt:", session.startedAt);
+        // console.log("StartedAt:", session.startedAt);
+        // Check what Mongo saved
+console.log("========== AFTER CREATE ==========");
+console.log("StartedAt:", session.startedAt);
+console.log("StartedAt ISO:", session.startedAt.toISOString());
+console.log("CreatedAt:", session.createdAt);
+console.log("UpdatedAt:", session.updatedAt);
         res.status(201).json({
             success:true,
             message:"Exam Session Started",
