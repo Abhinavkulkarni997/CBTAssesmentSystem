@@ -51,7 +51,8 @@ const startExam=async(req,res)=>{
             return res.status(200).json({
                 success:true,
                 message:'Resume Existing Session',
-                session:existingSession
+                session:existingSession,
+               
             });
         }
         const exam=await Exam.findById(examId);
@@ -98,7 +99,8 @@ console.log("UpdatedAt:", session.updatedAt);
         res.status(201).json({
             success:true,
             message:"Exam Session Started",
-            session
+            session,
+            serverTIme:Date.now()
         });
     }catch(error){
         console.log(error);
@@ -183,7 +185,8 @@ const getCurrentSession = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      session
+      session,
+      serverTime:Date.now()
     });
 
   } catch (error) {

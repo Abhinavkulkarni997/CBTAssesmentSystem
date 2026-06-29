@@ -10,6 +10,7 @@ const ExamPage = () => {
      const [timeLeft,setTimeLeft]=useState(null);
      const [showSubmitModal,setShowSubmitModal]=useState(false);
      const [timerInitialized, setTimerInitialized] = useState(false);
+     const [serverOffset,setServerOffset]=useState(0);
      const navigate=useNavigate();
 
      
@@ -49,7 +50,7 @@ console.log("Browser Time:", new Date());
 
     const updateTimer = () => {
 
-        const now = Date.now();
+        const now = Date.now()+serverOffset;
 
         const elapsed =Math.max(0,
             Math.floor(
@@ -59,18 +60,19 @@ console.log("Browser Time:", new Date());
         const remaining =Math.max(0,
             duration * 60 - elapsed);
 
-        setTimeLeft(
-            remaining > 0
-                ? remaining
-                : 0
-        );
+        // setTimeLeft(
+        //     remaining > 0
+        //         ? remaining
+        //         : 0
+        // );
+        setTimeLeft(remaining);
 
         setTimerInitialized(true);
         console.log("Duration:", duration);
-console.log("Started At:", session.startedAt);
-console.log("Now:", new Date().toISOString());
-console.log("Elapsed:", elapsed);
-console.log("Remaining:", remaining);
+        console.log("Started At:", session.startedAt);
+        console.log("Now:", new Date().toISOString());
+        console.log("Elapsed:", elapsed);
+        console.log("Remaining:", remaining);
 
 
 
@@ -87,7 +89,7 @@ console.log("Remaining:", remaining);
     return () =>
         clearInterval(timer);
 
-}, [session]);
+}, [session,serverOffset]);
 
     
 
@@ -161,9 +163,23 @@ useEffect(() => {
             "Browser Now:",
             new Date().toISOString()
         );
-            setSession(res.data.session);
-            setSelectedAnswers(res.data.session.answers || {});
+          const offset=res.data.serverTime-Date.now();
+          setServerOffset(offset);
+          setSession(res.data.session);
+          setSelectedAnswers(res.data.session.answers || {});
+          console.log(
+          "Server Time:",
+          new Date(res.data.serverTime));
 
+          console.log(
+          "Browser Time:",
+          new Date()
+        );
+
+        console.log(
+          "Offset:",
+          res.data.serverTime - Date.now(),
+          "ms");
         }catch(error){
             console.log(error);
         }
