@@ -21,6 +21,12 @@ function App() {
         } />
         <Route path="/exam" element={<ProtectedRoute><ExamPage/></ProtectedRoute>}/>
         <Route path="submitted" element={<Submitted/>}/>
+
+
+       
+ 
+      
+      
       </Routes>
     </BrowserRouter>
   )
